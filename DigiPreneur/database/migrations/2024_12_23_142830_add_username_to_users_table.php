@@ -11,19 +11,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('training_programs', function (Blueprint $table) {
-            $table->decimal('price', 10, 2)->default(0); // Harga program
-            $table->string('image')->nullable(); // Gambar program
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('username')->unique()->after('id');
         });
     }
+
 
     /**
      * Reverse the migrations.
      */
     public function down()
     {
-        Schema::table('training_programs', function (Blueprint $table) {
-            $table->dropColumn(['price', 'image']);
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('username');
         });
     }
 };

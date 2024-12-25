@@ -12,9 +12,14 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $trainingPrograms = TrainingProgram::latest('start_date')->take(6)->get(); // Ambil 6 program terbaru
-        return view('dashboard', compact('trainingPrograms'));
-    }
+        // Ambil jadwal pelatihan terdekat
+        $upcomingEvents = TrainingProgram::where('start_date', '>=', now())
+            ->orderBy('start_date', 'asc')
+            ->take(3) // Ambil maksimal 3 event terdekat
+            ->get();
+    
+        return view('dashboard', compact('upcomingEvents'));
+    }    
 
     /**
      * Show the form for creating a new resource.

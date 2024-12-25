@@ -13,7 +13,7 @@ class TrainingProgramController extends Controller
         $query = TrainingProgram::query();
 
         // Filter Lokasi
-        if ($request->has('location')) {
+        if ($request->has('location') && $request->location != '') {
             $query->where('location', $request->location);
         }
 
@@ -54,7 +54,7 @@ class TrainingProgramController extends Controller
             'end_time' => 'required',
             'price' => 'required|numeric',
             'image' => 'nullable|image|max:2048',
-        ]);
+        ]);        
 
         // Simpan data
         $data = $request->all();
@@ -63,10 +63,16 @@ class TrainingProgramController extends Controller
             $filePath = $request->file('image')->store('program_images', 'public');
             $data['image'] = $filePath;
         }
-
+        
         TrainingProgram::create($data);
-
+        
         return redirect()->route('training_programs.index')->with('success', 'Program berhasil ditambahkan!');
+    }        
+
+    public function show($id)
+    {
+        $program = TrainingProgram::findOrFail($id); // Mengambil data berdasarkan ID
+        return view('training_programs.show', compact('program')); // Mengirim data ke view
     }
 
     // Menampilkan form edit jadwal
@@ -81,7 +87,8 @@ class TrainingProgramController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'location' => 'required|string',
+            'location' => 'required|in:Online,Offline',
+            'venue' => 'nullable|string|required_if:location,Offline',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'start_time' => 'required',

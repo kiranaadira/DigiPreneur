@@ -13,10 +13,13 @@ class TrainingProgram extends Model
         'title',
         'description',
         'location',
-        'date',
-        'time',
-        'status',
+        'venue',
+        'start_date',
+        'end_date',
+        'start_time',
+        'end_time',
         'price',
-        'image'
+        'image',
+        'status',
     ];
 }
