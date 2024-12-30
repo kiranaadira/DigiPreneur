@@ -8,64 +8,23 @@ use App\Models\TrainingProgram;
 class DashboardController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Konstruktor untuk middleware `auth`.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Menampilkan dashboard utama.
      */
     public function index()
     {
-        // Ambil jadwal pelatihan terdekat
         $upcomingEvents = TrainingProgram::where('start_date', '>=', now())
             ->orderBy('start_date', 'asc')
-            ->take(3) // Ambil maksimal 3 event terdekat
+            ->take(3)
             ->get();
-    
+
         return view('dashboard', compact('upcomingEvents'));
-    }    
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

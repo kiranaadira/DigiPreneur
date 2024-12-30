@@ -9,53 +9,81 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    /**
+     * Constructor untuk middleware.
+     * Hanya terapkan middleware `auth` untuk metode logout.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth')->only('logout');
+        $this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * Login page.
+     */
     public function login()
     {
+        // Redirect ke dashboard jika sudah login
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
 
-        return view('auth.login');  // Show the login form if not authenticated
+        return view('auth.login'); // Tampilkan form login
     }
 
+    /**
+     * Proses login.
+     */
     public function authenticate(Request $request)
     {
         $credentials = $request->only('username', 'password');
-        // Assuming you're getting the username and password from the login form
-        $user = User::where('username', $credentials['username'])->first();
 
-        // Check if the user exists and the password is correct
-        if ($user && Hash::check($credentials['password'], $user->password)) {
-            Auth::login($user);
-            return redirect()->route('dashboard');
-        } else {
-            return redirect()->route('login')->withErrors(['username' => 'The provided credentials do not match our records.']);
+        // Validasi login
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('dashboard');
         }
+
+        return back()->withErrors([
+            'username' => 'The provided credentials do not match our records.',
+        ]);
     }
 
+    /**
+     * Halaman registrasi.
+     */
     public function register()
     {
-        return view('auth.register');
+        return view('auth.register'); // Tampilkan form registrasi
     }
 
+    /**
+     * Proses registrasi pengguna baru.
+     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-        ]);        
+        ]);
 
+        // Simpan pengguna baru
         $user = User::create([
             'username' => $validatedData['username'],
             'email' => $validatedData['email'],
             'password' => bcrypt($validatedData['password']),
         ]);
 
+        // Login otomatis setelah registrasi
         Auth::login($user);
-        return redirect()->route('dashboard');
+        return redirect()->route('dashboard')->with('success', 'Registration successful!');
     }
 
+    /**
+     * Proses logout.
+     */
     public function logout(Request $request)
     {
         Auth::logout();
@@ -63,6 +91,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect()->route('login')->with('success', 'You have been logged out.');
     }
 }

@@ -7,7 +7,17 @@ use Illuminate\Http\Request;
 
 class TrainingProgramController extends Controller
 {
-    // Menampilkan semua program pelatihan
+    /**
+     * Terapkan middleware auth untuk semua metode.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Menampilkan semua program pelatihan.
+     */
     public function index(Request $request)
     {
         $query = TrainingProgram::query();
@@ -34,13 +44,17 @@ class TrainingProgramController extends Controller
         return view('training_programs.index', compact('programs'));
     }
 
-    // Menampilkan form untuk menambah jadwal pelatihan
+    /**
+     * Menampilkan form untuk menambah jadwal pelatihan.
+     */
     public function create()
     {
         return view('training_programs.create');
     }
 
-    // Menyimpan jadwal pelatihan baru
+    /**
+     * Menyimpan jadwal pelatihan baru.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -54,34 +68,40 @@ class TrainingProgramController extends Controller
             'end_time' => 'required',
             'price' => 'required|numeric',
             'image' => 'nullable|image|max:2048',
-        ]);        
+        ]);
 
-        // Simpan data
         $data = $request->all();
 
         if ($request->hasFile('image')) {
             $filePath = $request->file('image')->store('program_images', 'public');
             $data['image'] = $filePath;
         }
-        
-        TrainingProgram::create($data);
-        
-        return redirect()->route('training_programs.index')->with('success', 'Program berhasil ditambahkan!');
-    }        
 
-    public function show($id)
-    {
-        $program = TrainingProgram::findOrFail($id); // Mengambil data berdasarkan ID
-        return view('training_programs.show', compact('program')); // Mengirim data ke view
+        TrainingProgram::create($data);
+
+        return redirect()->route('training_programs.index')->with('success', 'Program berhasil ditambahkan!');
     }
 
-    // Menampilkan form edit jadwal
+    /**
+     * Menampilkan detail program pelatihan.
+     */
+    public function show($id)
+    {
+        $program = TrainingProgram::findOrFail($id);
+        return view('training_programs.show', compact('program'));
+    }
+
+    /**
+     * Menampilkan form edit jadwal.
+     */
     public function edit(TrainingProgram $training_program)
     {
         return view('training_programs.edit', compact('training_program'));
     }
 
-    // Menyimpan update jadwal
+    /**
+     * Menyimpan pembaruan jadwal.
+     */
     public function update(Request $request, TrainingProgram $training_program)
     {
         $request->validate([
@@ -99,7 +119,6 @@ class TrainingProgramController extends Controller
 
         $data = $request->all();
 
-        // Handle gambar jika diunggah
         if ($request->hasFile('image')) {
             $filePath = $request->file('image')->store('program_images', 'public');
             $data['image'] = $filePath;
@@ -110,8 +129,9 @@ class TrainingProgramController extends Controller
         return redirect()->route('training_programs.index')->with('success', 'Program berhasil diperbarui!');
     }
 
-
-    // Menghapus program pelatihan
+    /**
+     * Menghapus program pelatihan.
+     */
     public function destroy(TrainingProgram $training_program)
     {
         $training_program->delete();

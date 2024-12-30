@@ -22,8 +22,6 @@
 
         <form action="{{ route('settings.update') }}" method="POST">
             @csrf
-            @method('PUT')
-
             <!-- Nama -->
             <div class="mb-3">
                 <label for="username" class="form-label fw-bold" style="color: #0FBAB4;">Username</label>
