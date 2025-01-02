@@ -41,7 +41,7 @@
                                 <label class="form-label h6" style="color: #0FBAB4;">Image</label>
                                 <input type="file" name="image" class="form-control mb-2">
                                 @if($guideline->image)
-                                    <img src="{{ asset('storage/' . $guideline->image) }}" class="img-thumbnail" style="height: 100px;">
+                                    <img src="{{ asset($guideline->image) }}" class="img-thumbnail" style="height: 100px;">
                                 @endif
                             </div>
                         </div>

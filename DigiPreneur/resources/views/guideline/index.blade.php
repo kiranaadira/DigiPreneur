@@ -36,7 +36,7 @@
         <div class="col-md-6 col-lg-4">
             <div class="card h-100 border-0 shadow-hover position-relative overflow-hidden">
                 <div class="position-relative">
-                    <img src="{{ $guide->image ? asset('storage/' . $guide->image) : 'https://via.placeholder.com/500x300' }}" 
+                    <img src="{{ $guide->image ? asset($guide->image) : 'https://via.placeholder.com/500x300' }}" 
                          class="card-img-top" alt="{{ $guide->title }}" 
                          style="height: 200px; object-fit: cover; filter: brightness(0.9);">
                     <div class="position-absolute top-0 end-0 m-3">

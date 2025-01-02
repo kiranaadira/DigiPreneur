@@ -62,7 +62,7 @@
         @forelse($upcomingEvents as $event)
             <div class="col-md-4 mb-4">
                 <div class="card shadow-sm">
-                    <img src="{{ $event->image ? asset('storage/' . $event->image) : 'https://via.placeholder.com/400x200' }}" class="card-img-top" alt="{{ $event->title }}">
+                    <img src="{{ $event->image ? asset($event->image) : 'https://via.placeholder.com/400x200' }}" class="card-img-top" alt="{{ $event->title }}">
                     <div class="card-body">
                         <h5 class="card-title fw-bold" style="font-size: 1.3rem;">{{ $event->title }}</h5>
                         <p class="text-muted" style="font-size: 1rem;">

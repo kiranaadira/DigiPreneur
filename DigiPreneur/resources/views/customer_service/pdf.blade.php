@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $article->title }} - PDF</title>
+    <title>{{ $customer->name }} - PDF</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,39 +36,22 @@
 <body>
     <!-- Header -->
     <div class="header">
-        <h1>{{ $article->title }}</h1>
-        <p><strong>Category:</strong> {{ $article->category }}</p>
+        <h1>{{ $customer->name }}</h1>
     </div>
-
-    <!-- Thumbnail -->
-    @if($article->thumbnail)
-        <div class="thumbnail">
-            <img src="{{ asset($article->thumbnail) }}" alt="{{ $article->title }}">
-        </div>
-    @endif
 
     <!-- Article Details -->
     <div class="details">
-        <p><strong>Type:</strong> {{ ucfirst($article->type) }}</p>
-        <p><strong>Status:</strong> {{ ucfirst($article->status) }}</p>
+        <p><strong>Email:</strong> {{ ucfirst($customer->email) }}</p>
+        <p><strong>Phone:</strong> {{ ucfirst($customer->phone) }}</p>
         <p><strong>Published At:</strong> 
-            {{ $article->published_at ? $article->published_at->format('d M Y, H:i') : 'Not Published' }}
+            {{ $customer->created_at ? $customer->created_at->format('d M Y, H:i') : 'Not Published' }}
         </p>
-        <p><strong>Author:</strong> {{ $article->author }}</p>
     </div>
 
     <!-- Content -->
     <div class="content">
-        <h2>Content</h2>
-        <p>{!! nl2br(e($article->content)) !!}</p>
+        <h2>Message</h2>
+        <p>{!! nl2br(e($customer->message)) !!}</p>
     </div>
-
-    <!-- Resource Link -->
-    @if($article->url)
-        <div class="url">
-            <h3>Resource Link</h3>
-            <p><a href="{{ $article->url }}" target="_blank">{{ $article->url }}</a></p>
-        </div>
-    @endif
 </body>
 </html>

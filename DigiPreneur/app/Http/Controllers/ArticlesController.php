@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Articles;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
@@ -88,8 +89,18 @@ class ArticlesController extends Controller
         ]);
 
         if ($request->hasFile('thumbnail')) {
-            $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
-            $validated['thumbnail'] = $thumbnailPath;
+            $image = $request->file('thumbnail');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+    
+            // Simpan ke folder public/storage_articles
+            $destinationPath = public_path('storage_articles');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true); // Buat folder jika belum ada
+            }
+            $image->move($destinationPath, $imageName);
+    
+            // Simpan path gambar ke database
+            $validated['thumbnail'] = 'storage_articles/' . $imageName;
         }
 
         Articles::create($validated);
@@ -135,9 +146,22 @@ class ArticlesController extends Controller
         $article = Articles::findOrFail($id);
 
         if ($request->hasFile('thumbnail')) {
-            $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
-            $validated['thumbnail'] = $thumbnailPath;
-        }
+            if ($article->image) {
+                Storage::disk('public')->delete($article->image);
+            }
+                $image = $request->file('thumbnail');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+        
+                // Simpan ke folder public/storage_articles
+                $destinationPath = public_path('storage_articles');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true); // Buat folder jika belum ada
+                }
+                $image->move($destinationPath, $imageName);
+        
+                // Simpan path gambar ke database
+                $validated['thumbnail'] = 'storage_articles/' . $imageName;
+            }
 
         $article->update($validated);
 

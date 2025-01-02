@@ -44,7 +44,7 @@
         @forelse($programs as $program)
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm border-0" style="background-color: #ffffff;">
-                    <img src="{{ $program->image ? asset('storage/' . $program->image) : 'https://via.placeholder.com/500x300' }}" 
+                    <img src="{{ $program->image ? asset($program->image) : 'https://via.placeholder.com/500x300' }}" 
                          class="card-img-top rounded" alt="{{ $program->title }}" style="object-fit: cover; height: 180px;">
                     <div class="card-body">
                         <h5 class="card-title fw-bold" style="color: #0FBAB4;">{{ $program->title }}</h5>

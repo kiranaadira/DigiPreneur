@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\TrainingProgram;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class TrainingProgramController extends Controller
 {
@@ -44,6 +47,27 @@ class TrainingProgramController extends Controller
         return view('training_programs.index', compact('programs'));
     }
 
+    public function downloadPDF($id)
+    {
+        $program = TrainingProgram::find($id);
+
+        if (!$program) {
+            abort(404, 'Program not found');
+        }
+
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+        $dompdf = new Dompdf($options);
+
+        $html = view('training_programs.pdf', compact('program'))->render();
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return $dompdf->stream($program->title . '.pdf', ['Attachment' => true]);
+    }
+
     /**
      * Menampilkan form untuk menambah jadwal pelatihan.
      */
@@ -57,7 +81,7 @@ class TrainingProgramController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'location' => 'required|in:Online,Offline',
@@ -70,14 +94,21 @@ class TrainingProgramController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
-        $data = $request->all();
-
         if ($request->hasFile('image')) {
-            $filePath = $request->file('image')->store('program_images', 'public');
-            $data['image'] = $filePath;
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+    
+            // Simpan ke folder public/storage_articles
+            $destinationPath = public_path('program_images');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true); // Buat folder jika belum ada
+            }
+            $image->move($destinationPath, $imageName);
+    
+            // Simpan path gambar ke database
+            $validated['image'] = 'program_images/' . $imageName;
         }
-
-        TrainingProgram::create($data);
+        TrainingProgram::create($validated);
 
         return redirect()->route('training_programs.index')->with('success', 'Program berhasil ditambahkan!');
     }
@@ -102,9 +133,9 @@ class TrainingProgramController extends Controller
     /**
      * Menyimpan pembaruan jadwal.
      */
-    public function update(Request $request, TrainingProgram $training_program)
+    public function update(Request $request, String $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'location' => 'required|in:Online,Offline',
@@ -114,17 +145,30 @@ class TrainingProgramController extends Controller
             'start_time' => 'required',
             'end_time' => 'required',
             'price' => 'required|numeric',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->all();
+        $program = TrainingProgram::findOrFail($id);
 
         if ($request->hasFile('image')) {
-            $filePath = $request->file('image')->store('program_images', 'public');
-            $data['image'] = $filePath;
-        }
+            if ($program->image) {
+                Storage::disk('public')->delete($program->image);
+            }
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+        
+                // Simpan ke folder public/storage_articles
+                $destinationPath = public_path('program_images');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true); // Buat folder jika belum ada
+                }
+                $image->move($destinationPath, $imageName);
+        
+                // Simpan path gambar ke database
+                $validated['image'] = 'program_images/' . $imageName;
+            }  
 
-        $training_program->update($data);
+        $program->update($validated);
 
         return redirect()->route('training_programs.index')->with('success', 'Program berhasil diperbarui!');
     }

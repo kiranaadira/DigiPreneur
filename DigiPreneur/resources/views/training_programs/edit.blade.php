@@ -68,7 +68,7 @@
                 <label class="form-label fw-bold" style="color: #0FBAB4;">Image</label>
                 <input type="file" name="image" class="form-control">
                 @if($training_program->image)
-                    <img src="{{ asset('storage/' . $training_program->image) }}" class="mt-3 rounded" style="width: 150px;">
+                    <img src="{{ asset($training_program->image) }}" class="mt-3 rounded" style="width: 150px;">
                 @endif
             </div>
 

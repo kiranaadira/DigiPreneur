@@ -22,7 +22,7 @@
         <!-- Gambar -->
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm border-0">
-                <img src="{{ asset('storage/' . $program->image) }}" class="card-img-top rounded" alt="{{ $program->title }}">
+                <img src="{{ asset($program->image) }}" class="card-img-top rounded" alt="{{ $program->title }}">
             </div>
         </div>
 
@@ -93,6 +93,10 @@
                         <i class="bi bi-trash"></i> Delete
                     </button>
                 </form>
+                <!-- Tombol Download PDF -->
+                <a href="{{ route('training_programs.pdf', $program->id) }}" class="btn btn-success">
+                    <i class="bi bi-file-earmark-pdf"></i> Download PDF
+                </a>
             </div>
         </div>
     </div>

@@ -22,7 +22,7 @@
         <!-- Thumbnail -->
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm border-0">
-                <img src="{{ $article->thumbnail ? asset('storage/' . $article->thumbnail) : 'https://via.placeholder.com/500x300' }}" class="card-img-top rounded" alt="{{ $article->title }}">
+                <img src="{{ $article->thumbnail ? asset($article->thumbnail) : 'https://via.placeholder.com/500x300' }}" class="card-img-top rounded" alt="{{ $article->title }}">
             </div>
         </div>
 
@@ -72,7 +72,7 @@
                     </button>
                 </form>
                 <!-- Tombol Download PDF -->
-                <a href="{{ route('articles.pdf', $article->id) }}" class="btn btn-success">
+                <a href="{{ route('articles.pdf', $article->id) }}" class="btn btn-outline-primary btn-sm px-3">
                     <i class="bi bi-file-earmark-pdf"></i> Download PDF
                 </a>
             </div>
@@ -89,7 +89,9 @@
     @if($article->url)
         <div class="mt-3">
             <h5 class="fw-bold" style="color: #0FBAB4;">Resource Link</h5>
-            <a href="{{ $article->url }}" class="text-decoration-none" target="_blank">{{ $article->url }}</a>
+            <a href="{{ $article->url }}" class="btn btn-outline-primary btn-sm px-3" target="_blank">
+                <i class="fab fa-youtube"></i>Klik disini untuk membuka link
+            </a>
         </div>
     @endif
 </div>

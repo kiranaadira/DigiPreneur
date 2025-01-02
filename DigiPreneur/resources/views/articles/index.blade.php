@@ -6,13 +6,13 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold" style="color: #0FBAB4;">Pusat Sumber Daya dan Tutorial Online</h2>
         <a href="{{ route('articles.create') }}" class="btn btn-success">
-            <i class="bi bi-plus-circle me-1"></i> Tambah Artikel
+            <i class="bi bi-plus-circle me-1"></i> Tambah
         </a>
     </div>
 
     <!-- Description Section -->
-    <div class="card shadow-sm p-4 mb-4" style="background-color: #f8f9fa;">
-        <p class="text-muted mb-0">
+    <div class="card border-0 shadow-sm p-4 mb-4" style="background: linear-gradient(45deg, #0FBAB4, #2C3E50);">
+        <p class="text-white mb-0">
             Koleksi tutorial online berupa video dan artikel yang mengajarkan UMKM berbagai keterampilan digital, seperti membuat situs web, mengoptimalkan SEO, dan mengelola media sosial.
         </p>
     </div>
@@ -52,7 +52,7 @@
         @forelse($articles as $article)
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm border-0" style="background-color: #ffffff;">
-                    <img src="{{ $article->image ? asset('storage/' . $article->image) : 'https://via.placeholder.com/500x300' }}" 
+                    <img src="{{ $article->thumbnail ? asset($article->thumbnail) : 'https://via.placeholder.com/500x300' }}" 
                          class="card-img-top rounded" alt="{{ $article->title }}" style="object-fit: cover; height: 180px;">
                     <div class="card-body">
                         <h5 class="card-title fw-bold" style="color: #0FBAB4;">{{ $article->title }}</h5>
@@ -60,7 +60,7 @@
                         <p class="text-secondary mb-2">
                             <i class="bi bi-file-earmark-text text-primary me-1"></i> {{ ucfirst($article->type) }}
                         </p>
-                        <a href="{{ route('articles.show', $article->id) }}" class="btn btn-info btn-sm">Detail</a>
+                        <a href="{{ route('articles.show', $article->id) }}" class="btn btn-outline-primary btn-sm px-3">View Detail</a>
                         <a href="{{ route('articles.edit', $article->id) }}" class="btn btn-warning btn-sm">
                             <i class="bi bi-pencil"></i>
                         </a>

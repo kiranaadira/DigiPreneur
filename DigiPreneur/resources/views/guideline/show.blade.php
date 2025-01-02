@@ -15,7 +15,7 @@
             <!-- Image Section -->
             <div class="col-md-5">
                 <div class="position-relative h-100">
-                    <img src="{{ $guideline->image ? asset('storage/' . $guideline->image) : 'https://via.placeholder.com/500x500' }}" 
+                    <img src="{{ $guideline->image ? asset($guideline->image) : 'https://via.placeholder.com/500x500' }}" 
                          class="w-100 h-100" style="object-fit: cover;" alt="{{ $guideline->title }}">
                     <div class="position-absolute top-0 start-0 m-3">
                         <span class="badge rounded-pill" 
@@ -79,7 +79,7 @@
                                 <i class="bi bi-link-45deg me-2"></i>Additional Resources
                             </h5>
                             <div class="d-flex align-items-center">
-                                <a href="#" class="btn btn-outline-primary me-3">
+                                <a href="{{ route('guideline.pdf', $guideline->id) }}" class="btn btn-outline-primary me-3">
                                     <i class="bi bi-download me-2"></i>Download PDF
                                 </a>
                                 <a href="#" class="btn btn-outline-secondary">

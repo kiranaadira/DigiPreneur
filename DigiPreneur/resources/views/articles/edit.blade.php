@@ -63,7 +63,7 @@
                 <label class="form-label fw-bold" style="color: #0FBAB4;">Thumbnail Image</label>
                 <input type="file" name="thumbnail" class="form-control">
                 @if($article->thumbnail)
-                    <img src="{{ asset('storage/' . $article->thumbnail) }}" class="mt-3 rounded" style="width: 150px;">
+                    <img src="{{ asset($article->thumbnail) }}" class="mt-3 rounded" style="width: 150px;">
                 @endif
             </div>
 

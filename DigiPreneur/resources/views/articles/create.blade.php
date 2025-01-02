@@ -3,7 +3,6 @@
 @section('content')
 <div class="container mt-5">
     <h2 class="fw-bold" style="color: #0FBAB4;">Add an Article</h2>
-    <p>Pusat Sumber Daya dan Tutorial Online, Koleksi tutorial online berupa video, artikel, dan panduan interaktif yang mengajarkan UMKM berbagai keterampilan digital, seperti membuat situs web, mengoptimalkan SEO, dan mengelola media sosial.</p>
     <div class="card shadow-sm p-4" style="background-color: #f8f9fa;">
         <form action="{{ route('articles.store') }}" method="POST" enctype="multipart/form-data">
             @csrf

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Guideline;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class GuidelineController extends Controller
 {
@@ -18,6 +20,26 @@ class GuidelineController extends Controller
         return view('guideline.index', compact('guideline'));
     }
 
+    public function downloadPDF($id)
+    {
+        $guideline = Guideline::find($id);
+
+        if (!$guideline) {
+            abort(404, 'Guideline not found');
+        }
+
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+        $dompdf = new Dompdf($options);
+
+        $html = view('guideline.pdf', compact('guideline'))->render();
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return $dompdf->stream($guideline->title . '.pdf', ['Attachment' => true]);
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -43,8 +65,8 @@ class GuidelineController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/guidelines', $imageName);
-            $validated['image'] = 'guidelines/' . $imageName;
+            $image->storeAs('storage_guidelines', $imageName);
+            $validated['image'] = 'storage_guidelines/' . $imageName;
         }
 
         // Buat guideline baru
@@ -89,16 +111,22 @@ class GuidelineController extends Controller
 
         // Handle upload gambar baru
         if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
             if ($guideline->image) {
                 Storage::disk('public')->delete($guideline->image);
             }
-
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/guidelines', $imageName);
-            $validated['image'] = 'guidelines/' . $imageName;
-        }
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+        
+                // Simpan ke folder public/storage_articles
+                $destinationPath = public_path('storage_guidelines');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true); // Buat folder jika belum ada
+                }
+                $image->move($destinationPath, $imageName);
+        
+                // Simpan path gambar ke database
+                $validated['image'] = 'storage_guidelines/' . $imageName;
+            }
 
         // Update guideline
         $guideline->update($validated);
